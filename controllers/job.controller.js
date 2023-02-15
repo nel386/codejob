@@ -5,7 +5,7 @@ const Job = require("../models/job.model.js");
 const Employer = require("../models/employer.model.js");
 
 // Endpoint para obtener todas las ofertas de trabajo activas
-router.get("/manage-jobs.", async (req, res) => {
+router.get("/manage-jobs", async (req, res) => {
   try {
     // Buscar todas las ofertas de trabajo activas en la base de datos
     const jobs = await Job.find({ jobActive: true }).populate("company");
@@ -21,6 +21,3 @@ router.get("/manage-jobs.", async (req, res) => {
 
 module.exports = router;
 
-// Este endpoint se encarga de buscar todas las ofertas de trabajo activas en la base de datos y retornarlas al cliente.
-// En caso de que haya un error en la búsqueda, se retorna un estatus 404 y un mensaje de error.
-// La información de la oferta de trabajo incluye el nombre, número de empleados solicitando ese empleo, la categoría, la ubicación de la oferta, el logotipo de la empresa, la fecha de creación y expiración de la oferta.
