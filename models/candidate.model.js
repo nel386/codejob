@@ -3,19 +3,31 @@ const Schema = mongoose.Schema;
 
 const candidateSchema = new Schema({
   role: {
-    type: String,
-    required: true,
-    enum: ["admin", "user"],
+    type: Schema.Types.String,
+    ref: "Login",
+  },
+  loginId: {
+    type: Schema.Types.ObjectId,
+    ref: "Login",
   },
   username: {
-    type: String,
-    required: true,
-    unique: true,
+    type: Schema.Types.String,
+    ref: "Login",
   },
   email: {
+    type: Schema.Types.String,
+    ref: "Login",
+  },
+  firstName: {
     type: String,
     required: true,
-    unique: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  secondLastName: {
+    type: String,
   },
   phone: {
     type: String,
@@ -24,6 +36,29 @@ const candidateSchema = new Schema({
   age: {
     type: Number,
     required: true,
+  },
+
+  especiality: {
+    type: String,
+    required: true,
+    enum: [
+      "Desarrollador Frontend",
+      "Desarrollador Backend",
+      "Desarrollador FullStack",
+      "DevOps",
+      "QA",
+      "Diseñador UX/UI",
+      "Científico de Datos",
+      "Analista de Datos",
+      "Ingeniero de Datos",
+      "Product Manager",
+      "Analista",
+      "Scrum Master",
+      "Ventas",
+      "Marketing",
+      "Recruiter",
+      "Otro",
+    ],
   },
 
   currentSalary: {
@@ -165,9 +200,9 @@ const candidateSchema = new Schema({
     type: String,
     required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  registerAt: {
+    type: Schema.Types.Date,
+    ref: "Login",
   },
   images: [
     {
@@ -178,7 +213,16 @@ const candidateSchema = new Schema({
     type: Boolean,
     required: true,
   },
+  appliedJobs: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Job",
+    },
+  ],
   resume: {
+    type: String,
+  },
+  photo: {
     type: String,
   },
 });

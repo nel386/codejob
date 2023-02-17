@@ -12,7 +12,72 @@ const jobSchema = new Schema({
     required: true,
   },
   location: {
-    type: String,
+    country: {
+      type: String,
+      required: true,
+      enum: ["España", "EEUU", "Alemania", "Reino Unido", "Francia", "Italia"],
+      default: "España",
+    },
+    city: {
+      type: String,
+      required: true,
+      enum: [
+        "Álava",
+        "Albacete",
+        "Alicante",
+        "Almería",
+        "Asturias",
+        "Ávila",
+        "Badajoz",
+        "Barcelona",
+        "Burgos",
+        "Cáceres",
+        "Cádiz",
+        "Cantabria",
+        "Castellón",
+        "Ciudad Real",
+        "Córdoba",
+        "Cuenca",
+        "Gerona",
+        "Granada",
+        "Guadalajara",
+        "Guipúzcoa",
+        "Huelva",
+        "Huesca",
+        "Islas Baleares",
+        "Jaén",
+        "La Coruña",
+        "La Rioja",
+        "Las Palmas",
+        "León",
+        "Lérida",
+        "Lugo",
+        "Madrid",
+        "Málaga",
+        "Murcia",
+        "Navarra",
+        "Orense",
+        "Palencia",
+        "Pontevedra",
+        "Salamanca",
+        "Santa Cruz de Tenerife",
+        "Segovia",
+        "Sevilla",
+        "Soria",
+        "Tarragona",
+        "Teruel",
+        "Toledo",
+        "Valencia",
+        "Valladolid",
+        "Vizcaya",
+        "Zamora",
+        "Zaragoza",
+      ],
+    },
+    address: {
+      type: String,
+      required: true,
+    },
   },
   createdAt: {
     type: Date,
@@ -78,19 +143,35 @@ const jobSchema = new Schema({
       ],
     },
   ],
-  requiredExperience: [
-    {
-      type: String,
+  experience: {
+    requiredExperience: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    yearExperience: {
+      type: Number,
       required: true,
     },
-  ],
+  },
+
   applicants: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Candidate",
+      ref: "Login",
     },
   ],
+  logo: {
+    type: Schema.Types.String,
+    ref: "Employer",
+  },
+  companyType: {
+    type: Schema.Types.String,
+    ref: "Employer",
+  },
 });
+
 
 const Job = mongoose.model("Job", jobSchema);
 

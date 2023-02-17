@@ -2,6 +2,22 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const employerSchema = new Schema({
+  role: {
+    type: Schema.Types.String,
+    ref: "Login",
+  },
+  loginId: {
+    type: Schema.Types.ObjectId,
+    ref: "Login",
+  },
+  username: {
+    type: Schema.Types.String,
+    ref: "Login",
+  },
+  email: {
+    type: Schema.Types.String,
+    ref: "Login",
+  },
   companyName: {
     type: String,
     required: true,
@@ -9,11 +25,6 @@ const employerSchema = new Schema({
   phone: {
     type: String,
     required: true,
-  },
-  companyUsername: {
-    type: String,
-    required: true,
-    unique: true,
   },
   website: {
     type: String,
