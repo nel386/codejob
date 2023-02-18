@@ -95,6 +95,61 @@ router.get("/job-list", async (req, res) => {
   }
   });
 
+  //Endpoint para postear una oferta de trabajo por parte de un empleador 
+
+
+//FALTA ENLAZAR LA OFERTA DE TRABAJO CON EL EMPLEADOR QUE LA POSTEA
+  router.post("/post-job", async (req, res) => {
+    try {
+      const {
+        title,
+        description,
+        jobSkills,
+        jobType,
+        salary,
+        carreerLevel,
+        yearExperience,
+        requiredExperience,
+        expirationDate,
+        location,
+        privacy,
+        responsibilities,
+      } = req.body;
+  
+      const newJob = new Job({
+        title,
+        description,
+        jobSkills,
+        jobType,
+        salary,
+        carreerLevel,
+        experience:{yearExperience,
+          requiredExperience},
+        expirationDate,
+        location: {
+          country: location.country,
+          city: location.city,
+          address: location.address
+        },
+        createdAt: new Date(),
+        privacy,
+        responsibilities,
+      });
+  
+      const savedJob = await newJob.save();
+  
+      res.status(201).json({
+        message: "Trabajo creado exitosamente",
+        job: savedJob
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error al crear el trabajo",
+        error: error.message
+      });
+    }
+  });
+  
 
 module.exports = router;
 

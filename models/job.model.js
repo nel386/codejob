@@ -94,7 +94,6 @@ const jobSchema = new Schema({
       min: Number,
       max: Number,
     },
-    required: true,
   },
   salary: {
     type: {
@@ -111,7 +110,7 @@ const jobSchema = new Schema({
   privacy: {
     type: String,
     required: true,
-    enum: ["Publico", "Privado"],
+    enum: ["Público", "Privado"],
   },
   jobActive: {
     type: Boolean,
@@ -126,21 +125,9 @@ const jobSchema = new Schema({
       required: true,
     },
   ],
-  requiredSkills: [
+  jobSkills: [
     {
       type: String,
-      enum: [
-        "Programación",
-        "Desarrollo Web",
-        "Desarrollo de Aplicaciones",
-        "Diseño Gráfico",
-        "Análisis de Datos",
-        "Marketing Digital",
-        "Redacción",
-        "Traducción",
-        "Auditoría",
-        "Otras",
-      ],
     },
   ],
   experience: {
@@ -154,6 +141,19 @@ const jobSchema = new Schema({
       type: Number,
       required: true,
     },
+  },
+
+  carreerLevel: {
+    type: String,
+    enum: [
+      "Secundaria",
+      "Bachillerato",
+      "Grado Medio",
+      "Grado Superior",
+      "Universitario",
+      "Máster",
+      "Doctorado",
+    ],
   },
 
   applicants: [

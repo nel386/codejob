@@ -68,6 +68,8 @@ mongoose.set("strictQuery", true);
 // Importar controladores
 const jobs = require("./controllers/job.controller");
 const candidates = require("./controllers/candidate.controller");
+// const employers = require("./controllers/employer.controller");
+// const logins = require("./controllers/login.controller");
 
 
 // Configurar variables de entorno
@@ -95,7 +97,7 @@ app.use(express.json());
 app.use("/job", jobs);
 app.use("/candidate", candidates);
 
-// Escuchar peticiones en el puerto especificado en las variables de entorno o en el puerto 8000
+// Escuchar peticiones en el puerto especificado en el puerto 8000
 const port = 8000;
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
