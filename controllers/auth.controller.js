@@ -8,10 +8,10 @@ const asyncHandler = require("express-async-handler");
 // @access Private
 
 const createNewUser = asyncHandler(async (req, res) => {
-  const { email, password, role, userName } = req.body;
+  const { email, password, role } = req.body;
 
   // Confirm data
-  if (!userName || !password || !role || !email) {
+  if ( !password || !role || !email) {
     return res.status(400).json({ message: "All fields are required" });
   }
   // Check for duplicate email
@@ -30,7 +30,6 @@ const createNewUser = asyncHandler(async (req, res) => {
       email,
       password: await bcrypt.hash(password, 10),
       role,
-      userName,
       registerAt: new Date(),
       lastLogin: new Date(),
     });

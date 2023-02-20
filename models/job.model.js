@@ -74,38 +74,19 @@ const jobSchema = new Schema({
         "Zaragoza",
       ],
     },
-    address: {
-      type: String,
-      required: true,
-    },
   },
   createdAt: {
     type: Date,
     default: Date.now,
   },
-  expirationDate: {
-    type: Date,
-  },
-  hoursPerWeek: {
-    type: Number,
-  },
-  hourlyRate: {
-    type: {
-      min: Number,
-      max: Number,
-    },
-  },
   salary: {
-    type: {
-      min: Number,
-      max: Number,
-    },
+    type: Number,
     required: true,
   },
   jobType: {
     type: String,
     required: true,
-    enum: ["Tiempo Completo", "Media Jornada", "Temporal", "Freelancer"],
+    enum: ["Presencial", "Remoto", "Híbrido"],
   },
   privacy: {
     type: String,
@@ -119,59 +100,18 @@ const jobSchema = new Schema({
     type: String,
     required: true,
   },
-  responsibilities: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
-  jobSkills: [
-    {
-      type: String,
-    },
-  ],
-  experience: {
-    requiredExperience: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
-    yearExperience: {
-      type: Number,
-      required: true,
-    },
-  },
-
-  carreerLevel: {
-    type: String,
-    enum: [
-      "Secundaria",
-      "Bachillerato",
-      "Grado Medio",
-      "Grado Superior",
-      "Universitario",
-      "Máster",
-      "Doctorado",
-    ],
-  },
 
   applicants: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Login",
+      ref: "Auth",
     },
   ],
   logo: {
     type: Schema.Types.String,
     ref: "Employer",
   },
-  companyType: {
-    type: Schema.Types.String,
-    ref: "Employer",
-  },
 });
-
 
 const Job = mongoose.model("Job", jobSchema);
 
