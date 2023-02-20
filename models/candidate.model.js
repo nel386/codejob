@@ -202,7 +202,7 @@ const candidateSchema = new Schema({
   },
   registerAt: {
     type: Schema.Types.Date,
-    ref: "Login",
+    ref: "Auth",
   },
   images: [
     {

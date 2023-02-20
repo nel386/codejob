@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const loginSchema = new Schema({
-  username: {
+  userName: {
     type: String,
     required: true,
     minlength: 4,
@@ -30,11 +30,17 @@ const loginSchema = new Schema({
   },
   registerAt: {
     type: Date,
-    default: Date.now,
     immutable: true,
+    required: true,
   },
   lastLogin: {
     type: Date,
+    required: true,
+  },
+  active: {
+    type: Boolean,
+    required: true,
+    default: true,
   },
 });
 
