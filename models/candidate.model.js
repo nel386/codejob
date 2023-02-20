@@ -4,19 +4,19 @@ const Schema = mongoose.Schema;
 const candidateSchema = new Schema({
   role: {
     type: Schema.Types.String,
-    ref: "Login",
+    ref: "Auth",
   },
-  loginId: {
+  AuthId: {
     type: Schema.Types.ObjectId,
-    ref: "Login",
+    ref: "Auth",
   },
   username: {
     type: Schema.Types.String,
-    ref: "Login",
+    ref: "Auth",
   },
   email: {
     type: Schema.Types.String,
-    ref: "Login",
+    ref: "Auth",
   },
   firstName: {
     type: String,
