@@ -8,7 +8,7 @@ mongoose.set("strictQuery", true);
 const jobs = require("./controllers/job.controller");
 const candidates = require("./controllers/candidate.controller");
 // const employers = require("./controllers/employer.controller");
-// const logins = require("./controllers/login.controller");
+// const auths = require("./controllers/auth.controller");
 
 // Configurar variables de entorno
 dotenv.config();
