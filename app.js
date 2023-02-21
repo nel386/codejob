@@ -38,15 +38,19 @@ db.on("error", (err) => {
 // Configurar middleware para recibir y enviar JSON
 app.use(express.json());
 
-// Definir rutas de servidor
-app.use("/job", jobs);
-app.use("/candidate", candidates);
-// app.use("/employer", employers);
-
-
+//Definir rutas de autenticación
 app.use(logger);
 app.use("/auth", require("./routes/auth.routes"));
 app.use(errorHandler);
+
+// Definir rutas de jobs
+app.use("/job", require("./routes/job.routes"));
+
+// Definir rutas de candidates
+app.use("/candidate", require("./routes/candidate.routes"));
+
+// Definir rutas de employers
+// app.use("/employer", require("./routes/employer.routes"));
 
 // Escuchar peticiones en el puerto especificado en el puerto 8000
 const port = 8000;

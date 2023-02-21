@@ -1,21 +1,29 @@
 const express = require("express");
 const router = express.Router();
-const {
-  createNewUser,
-  login,
-  updateUser,
-  refresh,
-} = require("../controllers/auth.controller");
-
-const loginLimiter = require("../middlewares/loginLimiter");
 const verifyToken = require("../middlewares/verifyToken");
+const {
+  getAllJobs,
+  getJobsAppliedByLoginId,
+  removeJobApplication,
+  getJobList,
+  createJob,
+} = require("../controllers/job.controller");
 
-router.route("/signup").post(createNewUser);
+router.route("/all-jobs").get(verifyToken, getAllJobs);
 
-router.route("/login").post(loginLimiter, login);
+router
+  .route("/jobs-applied/:loginId")
+  .get(verifyToken, getJobsAppliedByLoginId);
 
-router.route("/refresh").get(refresh);
+router.delete(
+  "/jobs-applied/:loginId/:jobId",
+  verifyToken,
+  removeJobApplication
+);
 
-router.route("/login/:id").patch(verifyToken,updateUser);
+router.get("/job-list",  getJobList);
+
+router.post("/post-job", createJob);
+
 
 module.exports = router;

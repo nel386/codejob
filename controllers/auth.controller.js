@@ -130,13 +130,13 @@ const login = asyncHandler(async (req, res) => {
             },
           },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "20s" }
+          { expiresIn: "20m" }
         );
 
         const refreshToken = jwt.sign(
           { email: foundUser.email },
           process.env.REFRESH_TOKEN_SECRET,
-          { expiresIn: "1m" }
+          { expiresIn: "20m" }
         );
         // Send accessToken and refreshToken
         res.json({
