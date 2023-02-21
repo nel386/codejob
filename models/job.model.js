@@ -104,7 +104,7 @@ const jobSchema = new Schema({
   applicants: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Auth",
+      ref: "Login",
     },
   ],
   logo: {

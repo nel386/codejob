@@ -21,9 +21,10 @@ const createNewUser = asyncHandler(async (req, res) => {
       status: "failed",
       data: null,
       message: "This email is already registered",
-      error: error.message,
+      error: duplicate.message,
     });
   }
+  
 
   try {
     const newUser = new Login({

@@ -1,0 +1,22 @@
+20230221	08:21:13	2e66dc2e-06a3-41e6-9734-6898a67ef5aa	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:32	6e554205-1991-4f38-bc46-b43c841d09c2	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:33	c21c8dbf-c366-438e-b8f0-ea4e2d501df4	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:33	68333d60-e3e8-4c55-bd87-32f9e8420a7b	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:33	65cd1eca-e865-44f6-8d3e-205004c0d483	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:34	d869581b-5647-4070-9330-423ea5028dad	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:34	91139626-ae12-45ae-9091-4926487f7526	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:34	166ac5f8-1a97-4d2d-9c1f-19303e4462b5	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:34	533e1e9d-d4ef-4135-8144-9fd37338b095	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:34	97863ed7-88ec-4751-96fc-d581f631f350	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:34	8c7848e6-372e-42da-9dbf-b52f18340d09	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:35	841d8132-10e4-4e95-89d6-e9a6f02c54cf	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:35	b5fb30b6-4fbf-4bb6-8275-b9861eca846f	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:35	ade3274a-f6b6-4392-93fb-08a17df0e061	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:35	e3f263c9-f845-4d10-837c-1cd13f528fe6	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:35	5fdc45c9-189b-472b-896b-d9b32dcaf72d	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:35	3207f35c-d129-437a-b043-d953bb80745b	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:36	c80f36e0-9fa3-4f0b-a0b6-5345af1dd89c	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:36	30b5aa91-a4eb-44aa-924b-ee115eba4832	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:36	0d2d4dbd-fb98-47fd-b8da-93422828c057	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:38:36	66c20447-161e-4355-8c8c-e39edfec5f8b	ReferenceError: error is not defined	POST	/auth/signup	undefined
+20230221	08:46:48	ec884fae-3f00-4811-b983-a0aa470117d3	Too Many Requests: Too many login attempts from this IP, please try again after a 60 second pause	POST	/login	undefined

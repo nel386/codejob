@@ -5,13 +5,15 @@ const dotenv = require("dotenv");
 mongoose.set("strictQuery", true);
 
 // Importar controladores
+const { logger, logEvents } = require("./middlewares/logger");
+const errorHandler = require("./middlewares/errorHandler");
+
 const jobs = require("./controllers/job.controller");
 const candidates = require("./controllers/candidate.controller");
 // const employers = require("./controllers/employer.controller");
-// const auths = require("./controllers/auth.controller");
 
 // Configurar variables de entorno
-dotenv.config();
+require("dotenv").config();
 
 // Crear aplicación de Express
 const app = express();
@@ -26,14 +28,25 @@ mongoose.connect(process.env.DATABASE_URL, {
 
 // Verificar la conexión a la base de datos
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
-
+db.on("error", (err) => {
+  console.log(err);
+  logEvents(
+    `${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`,
+    "mongoErrLog.log"
+  );
+});
 // Configurar middleware para recibir y enviar JSON
 app.use(express.json());
 
 // Definir rutas de servidor
 app.use("/job", jobs);
 app.use("/candidate", candidates);
+// app.use("/employer", employers);
+
+
+app.use(logger);
+app.use("/auth", require("./routes/auth.routes"));
+app.use(errorHandler);
 
 // Escuchar peticiones en el puerto especificado en el puerto 8000
 const port = 8000;

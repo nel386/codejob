@@ -4,19 +4,19 @@ const Schema = mongoose.Schema;
 const candidateSchema = new Schema({
   role: {
     type: Schema.Types.String,
-    ref: "Auth",
+    ref: "Login",
   },
   loginId: {
     type: Schema.Types.ObjectId,
-    ref: "Auth",
+    ref: "Login",
   },
   userName: {
     type: Schema.Types.String,
-    ref: "Auth",
+    ref: "Login",
   },
   email: {
     type: Schema.Types.String,
-    ref: "Auth",
+    ref: "Login",
   },
   firstName: {
     type: String,
@@ -55,7 +55,7 @@ const candidateSchema = new Schema({
   },
   registerAt: {
     type: Schema.Types.Date,
-    ref: "Auth",
+    ref: "Login",
   },
   isLookingForJob: {
     type: Boolean,
