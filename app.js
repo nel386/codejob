@@ -50,7 +50,7 @@ app.use("/job", require("./routes/job.routes"));
 app.use("/candidate", require("./routes/candidate.routes"));
 
 // Definir rutas de employers
-// app.use("/employer", require("./routes/employer.routes"));
+app.use("/employer", require("./routes/employer.routes"));
 
 // Escuchar peticiones en el puerto especificado en el puerto 8000
 const port = 8000;

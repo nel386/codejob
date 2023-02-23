@@ -7,13 +7,13 @@ const {
   removeJobApplication,
   getJobList,
   createJob,
+  getJobByJobId,
 } = require("../controllers/job.controller");
 
 router.route("/all-jobs").get(verifyToken, getAllJobs);
 
 router
-  .route("/jobs-applied/:loginId")
-  .get(verifyToken, getJobsAppliedByLoginId);
+.get("/jobs-applied/:loginId", getJobsAppliedByLoginId);
 
 router.delete(
   "/jobs-applied/:loginId/:jobId",
@@ -21,9 +21,10 @@ router.delete(
   removeJobApplication
 );
 
-router.get("/job-list",  getJobList);
+router.get("/job-list", getJobList);
 
 router.post("/post-job", createJob);
 
+router.get("/job-single/:jobId", getJobByJobId);
 
 module.exports = router;

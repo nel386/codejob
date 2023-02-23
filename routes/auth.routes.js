@@ -5,6 +5,7 @@ const {
   login,
   updateUser,
   refresh,
+  changePassword,
 } = require("../controllers/auth.controller");
 
 const loginLimiter = require("../middlewares/loginLimiter");
@@ -16,6 +17,8 @@ router.route("/login").post(loginLimiter, login);
 
 router.route("/refresh").get(refresh);
 
-router.route("/login/:id").patch(verifyToken,updateUser);
+router.route("/login/:id").patch(verifyToken, updateUser);
+
+router.route("/changePassword/:id").patch(verifyToken, changePassword);
 
 module.exports = router;

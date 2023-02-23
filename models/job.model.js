@@ -103,8 +103,14 @@ const jobSchema = new Schema({
 
   applicants: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "Login",
+      applicantId: {
+        type: Schema.Types.ObjectId,
+        ref: "Login",
+      },
+      applicationDate: {
+        type: Date,
+        default: Date.now,
+      },
     },
   ],
   logo: {

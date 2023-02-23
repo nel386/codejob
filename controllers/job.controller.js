@@ -1,12 +1,12 @@
-const express = require("express");
-const router = express.Router();
-const mongoose = require("mongoose");
+const jwt_decode = require("jwt-decode");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const Job = require("../models/job.model.js");
 const Employer = require("../models/employer.model.js");
 const Candidate = require("../models/candidate.model.js");
 const Login = require("../models/auth.model.js");
+const asyncHandler = require("express-async-handler");
 
 // @Desc Get all jobs
 // @Route GET /job/all-jobs
@@ -26,6 +26,14 @@ const getAllJobs = async (req, res) => {
 // @Route GET /job/jobs-applied/:jobId
 // @Access Private
 const getJobsAppliedByLoginId = async (req, res) => {
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (!authHeader) {
+    return res.status(401).json({
+      status: "Failed",
+      data: null,
+      error: "No se ha proporcionado un token de autenticación",
+    });
+  }
   try {
     const jobs = await Job.find({});
     const jobsWithApplicantsCount = await Promise.all(
@@ -36,7 +44,6 @@ const getJobsAppliedByLoginId = async (req, res) => {
           _id: job._id,
           title: job.title,
           createdAt: job.createdAt,
-          expirationDate: job.expirationDate,
           jobActive: job.jobActive,
           location: job.location,
           logo: job.logo,
@@ -151,84 +158,90 @@ const getJobList = async (req, res) => {
 // @desc Create a new job post
 // @route POST /job/post-job
 // @access Private
-
 const createJob = async (req, res) => {
   try {
     // Verificar el token del usuario
-    if (!req.headers.authorization) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+    const token = authHeader.split(" ")[1];
 
-    const token = req.headers.authorization.split(" ")[1];
-    // console.log(token);
-    // Importar el dotenv
-    const dotenv = require("dotenv");
-    require("dotenv").config();
-
-    // const decodedToken = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET);
-    //Decoding the token
-
-    const tokendecoded = jwt.verify(
-      token,
-      process.env.ACCESS_TOKEN_SECRET
-    );
-    console.log(tokendecoded);
-    // console.log(decodedToken);
+    const decodedToken = jwt_decode(token);
 
     // Obtener los datos del usuario
     const {
       title,
       description,
-      jobSkills,
-      jobType,
-      salary,
       location,
+      salary,
+      jobType,
       privacy,
+      jobActive,
     } = req.body;
-    const loginId = decodedToken.UserInfo.id;
+    const createdAt = new Date();
 
-    // Buscar la información del empleador usandoel loginId
-    const employer = await Employer.findOne({ loginId: loginId });
-    // Si no se encuentra el empleador, se retorna un estatus 404 y un mensaje de error
-    if (!employer) {
-      return res.status(404).json({
-        status: "Failed",
+    // Buscar la información de la compañía
+    const company = await Employer.findOne({ loginId: decodedToken.UserInfo.id });
+    if (!company) {
+      return res.status(400).json({
+        message: "No se encontró la información de la compañía",
         data: null,
-        error: "No se encontró el empleador con el loginId especificado",
       });
     }
 
-    // Crear un nuevo objeto Job con los datos recibidos en la petición
+    // Crear una nueva oferta de trabajo
     const newJob = new Job({
-      title: title,
-      description: description,
-      jobSkills: jobSkills,
-      jobType: jobType,
-      salary: salary,
-      location: location,
-      privacy: privacy,
-      company: employer._id,
-      logo: employer.logo,
-      applicants: [],
+      title,
+      description,
+      location,
+      salary,
+      jobType,
+      privacy,
+      jobActive,
+      createdAt,
+      company: company._id,
+      logo: company.logo,
     });
 
-    // Guardar el nuevo trabajo en la base de datos
     await newJob.save();
 
-    // Retornar un estatus 201 y un mensaje de éxito
-    res.status(201).json({
-      status: "Succeeded",
-      data: "La oferta de trabajo ha sido creada exitosamente",
-      error: null,
+    // Actualizar la información del empleador
+    await Employer.findByIdAndUpdate(company._id, { $push: { jobs: newJob._id } });
+
+    return res.status(201).json({
+      message: "Oferta de trabajo creada exitosamente",
+      data: newJob,
     });
   } catch (error) {
-    // Si hay un error en la creación de la oferta de trabajo, se retorna un estatus 500 y un mensaje de error
-    res.status(500).json({
-      status: "Failed",
-      data: null,
-      error: error.message,
+    return res.status(500).json({
+      message: "Error al crear la oferta de trabajo",
+      error,
     });
   }
+};
+
+// @Desc Get job by jobId
+// @Route GET /job/job-single/:jobId
+// @Access Public
+const getJobByJobId = async (req, res) => {
+  //Comprobar que hay token
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (!authHeader) {
+    return res.status(401).json({
+      status: "Failed",
+      data: null,
+      error: "No se ha proporcionado un token de autenticación",
+    });
+  }
+  const jobId = req.params.jobId;
+  console.log(jobId);
+  const job = await Job.findById(jobId).exec();
+  if (!job)
+    return res.status(400).json({
+      status: "Failed",
+      data: null,
+      error: `No se encontró la oferta de trabajo con el id ${jobId}`,
+    });
+
+  res.status(200).json({ status: "Succeeded", data: job, error: null });
 };
 
 module.exports = {
@@ -237,4 +250,5 @@ module.exports = {
   removeJobApplication,
   getJobList,
   createJob,
+  getJobByJobId,
 };

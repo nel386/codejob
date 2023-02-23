@@ -11,7 +11,7 @@ const createNewUser = asyncHandler(async (req, res) => {
   const { email, password, role } = req.body;
 
   // Confirm data
-  if ( !password || !role || !email) {
+  if (!password || !role || !email) {
     return res.status(400).json({ message: "All fields are required" });
   }
   // Check for duplicate email
@@ -24,7 +24,6 @@ const createNewUser = asyncHandler(async (req, res) => {
       error: duplicate.message,
     });
   }
-  
 
   try {
     const newUser = new Login({
@@ -208,14 +207,46 @@ const refresh = (req, res) => {
         { expiresIn: "15m" }
       );
 
-      res.json({ accessToken , id: foundUser._id, role: foundUser.role});
+      res.json({ accessToken, id: foundUser._id, role: foundUser.role });
     })
   );
 };
+
+// @desc changePassword
+// @route PATCH /auth/changePassword/:id
+// @access Private
+const changePassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const foundUser = await Login.findById(req.params.id).exec();
+
+  if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
+
+  const match = await bcrypt.compare(oldPassword, foundUser.password);
+  if (!match)
+    return res.status(401).json({
+      message: "Unauthorized",
+      data: null,
+      error: "Wrong old password",
+    });
+  if (match) {
+    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+    const updatedUser = await Login.findByIdAndUpdate(
+      req.params.id,
+      {
+        password: newPasswordHash,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json({ status: "succeeded", updatedUser, error: null });
+  }
+});
 
 module.exports = {
   createNewUser,
   login,
   updateUser,
   refresh,
+  changePassword,
 };
