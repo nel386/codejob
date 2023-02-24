@@ -95,6 +95,7 @@ const jobSchema = new Schema({
   },
   jobActive: {
     type: Boolean,
+    default: true,
   },
   description: {
     type: String,

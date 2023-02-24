@@ -26,20 +26,14 @@ const getAllJobs = async (req, res) => {
 // @Route GET /job/jobs-applied/:jobId
 // @Access Private
 const getJobsAppliedByLoginId = async (req, res) => {
-  const authHeader = req.headers.authorization || req.headers.Authorization;
-  if (!authHeader) {
-    return res.status(401).json({
-      status: "Failed",
-      data: null,
-      error: "No se ha proporcionado un token de autenticación",
-    });
-  }
   try {
-    const jobs = await Job.find({});
+    const loginId = req.params.loginId;
+    const jobs = await Job.find({
+      applicants: { $elemMatch: { applicantId: loginId } },
+    });
     const jobsWithApplicantsCount = await Promise.all(
       jobs.map(async (job) => {
         const count = job.applicants.length;
-
         return {
           _id: job._id,
           title: job.title,
@@ -63,7 +57,6 @@ const getJobsAppliedByLoginId = async (req, res) => {
       .json({ status: "Failed", data: null, error: error.message });
   }
 };
-
 // @Desc Delete job by jobId
 // @Route DELETE /job/jobs-applied/:loginId/:jobId
 // @Access Private
@@ -72,19 +65,8 @@ const removeJobApplication = async (req, res) => {
     // Obtener el jobId y el loginId de los parámetros de la URL
     const jobId = req.params.jobId;
     const loginId = req.params.loginId;
-    // Buscar el registro del candidato en la base de datos usando el loginId
-    const candidate = await Candidate.findOne({ loginId: loginId });
 
-    // Si el candidato no se encuentra, se retorna un estatus 404 y un mensaje de error
-    if (!candidate) {
-      return res.status(404).json({
-        status: "Failed",
-        data: null,
-        error: "No se encontró el candidato con el loginId especificado",
-      });
-    }
-
-    // Buscar el registro del trabajo en la base de datos usando el jobId
+    // Buscar el trabajo en la base de datos usando el jobId
     const job = await Job.findOne({ _id: jobId });
 
     // Si el trabajo no se encuentra, se retorna un estatus 404 y un mensaje de error
@@ -96,18 +78,25 @@ const removeJobApplication = async (req, res) => {
       });
     }
 
-    // Eliminar el jobId de la lista de appliedJobs del candidato
-    candidate.appliedJobs = candidate.appliedJobs.filter(
-      (appliedJob) => appliedJob.toString() !== jobId
+    // Buscar si el loginId del candidato está en la lista de applicants
+    const applicantIndex = job.applicants.findIndex(
+      (applicant) => applicant.applicantId.toString() === loginId
     );
 
-    // Eliminar el loginId de la lista de applicants del trabajo
-    job.applicants = job.applicants.filter(
-      (applicant) => applicant.toString() !== loginId
-    );
+    // Si el candidato no se encuentra inscrito en el trabajo, se retorna un estatus 400 y un mensaje de error
+    if (applicantIndex === -1) {
+      return res.status(400).json({
+        status: "Failed",
+        data: null,
+        error:
+          "El usuario no se encuentra inscrito en la oferta de trabajo especificada",
+      });
+    }
+
+    // Eliminar el objeto del candidato de la lista de applicants
+    job.applicants.splice(applicantIndex, 1);
 
     // Guardar los cambios en la base de datos
-    await candidate.save();
     await job.save();
 
     // Retornar un estatus 200 y un mensaje de éxito
@@ -179,7 +168,9 @@ const createJob = async (req, res) => {
     const createdAt = new Date();
 
     // Buscar la información de la compañía
-    const company = await Employer.findOne({ loginId: decodedToken.UserInfo.id });
+    const company = await Employer.findOne({
+      loginId: decodedToken.UserInfo.id,
+    });
     if (!company) {
       return res.status(400).json({
         message: "No se encontró la información de la compañía",
@@ -204,7 +195,9 @@ const createJob = async (req, res) => {
     await newJob.save();
 
     // Actualizar la información del empleador
-    await Employer.findByIdAndUpdate(company._id, { $push: { jobs: newJob._id } });
+    await Employer.findByIdAndUpdate(company._id, {
+      $push: { jobs: newJob._id },
+    });
 
     return res.status(201).json({
       message: "Oferta de trabajo creada exitosamente",

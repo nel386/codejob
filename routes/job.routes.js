@@ -12,8 +12,7 @@ const {
 
 router.route("/all-jobs").get(verifyToken, getAllJobs);
 
-router
-.get("/jobs-applied/:loginId", getJobsAppliedByLoginId);
+router.get("/jobs-applied/:loginId", verifyToken, getJobsAppliedByLoginId);
 
 router.delete(
   "/jobs-applied/:loginId/:jobId",
