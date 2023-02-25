@@ -64,9 +64,7 @@ const removeJobApplication = async (req, res) => {
   try {
     // Obtener el jobId y el loginId de los parámetros de la URL
     const jobId = req.params.jobId;
-    const loginId = req.params.loginId;
-
-    // Buscar el trabajo en la base de datos usando el jobId
+    const loginId = req.params.loginId; 
     const job = await Job.findOne({ _id: jobId });
 
     // Si el trabajo no se encuentra, se retorna un estatus 404 y un mensaje de error
@@ -96,7 +94,24 @@ const removeJobApplication = async (req, res) => {
     // Eliminar el objeto del candidato de la lista de applicants
     job.applicants.splice(applicantIndex, 1);
 
+    // Buscar el candidato en la base de datos usando el loginId
+    const candidate = await Candidate.findOne({ loginId: loginId });
+
+    // Si el candidato no se encuentra, se retorna un estatus 404 y un mensaje de error
+    if (!candidate) {
+      return res.status(404).json({
+        status: "Failed",
+        data: null,
+        error: "No se encontró el candidato con el loginId especificado",
+      });
+    }
+
+    // Eliminar el objeto del trabajo de la lista de jobsApplied del candidato
+    const jobAppliedIndex = candidate.appliedJobs.indexOf(jobId);
+    candidate.appliedJobs.splice(jobAppliedIndex, 1);
+
     // Guardar los cambios en la base de datos
+    await candidate.save();
     await job.save();
 
     // Retornar un estatus 200 y un mensaje de éxito

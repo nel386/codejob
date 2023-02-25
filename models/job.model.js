@@ -13,7 +13,6 @@ const jobSchema = new Schema({
   },
   companyName: {
     type: String,
-    required: true,
   },
   location: {
     country: {

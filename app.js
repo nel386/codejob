@@ -4,6 +4,12 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 mongoose.set("strictQuery", true);
 
+// Importacion de Swagger
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
+
+
+
 // Importar controladores
 const { logger, logEvents } = require("./middlewares/logger");
 const errorHandler = require("./middlewares/errorHandler");
@@ -17,6 +23,7 @@ require("dotenv").config();
 
 // Crear aplicación de Express
 const app = express();
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Habilitar CORS
 app.use(cors());
