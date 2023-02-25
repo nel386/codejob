@@ -11,6 +11,10 @@ const jobSchema = new Schema({
     ref: "Employer",
     required: true,
   },
+  companyName: {
+    type: String,
+    required: true,
+  },
   location: {
     country: {
       type: String,
@@ -87,11 +91,6 @@ const jobSchema = new Schema({
     type: String,
     required: true,
     enum: ["Presencial", "Remoto", "Híbrido"],
-  },
-  privacy: {
-    type: String,
-    required: true,
-    enum: ["Público", "Privado"],
   },
   jobActive: {
     type: Boolean,

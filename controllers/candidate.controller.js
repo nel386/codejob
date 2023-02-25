@@ -12,8 +12,7 @@ const getAllCandidates = async (req, res) => {
       photo: 1,
       firstName: 1,
       lastName: 1,
-      location: 1,
-      skills: { $slice: 3 },
+      bootcamp: 1,
     }
   );
 

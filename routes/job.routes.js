@@ -9,6 +9,7 @@ const {
   createJob,
   getJobByJobId,
 } = require("../controllers/job.controller");
+const { verify } = require("jsonwebtoken");
 
 router.route("/all-jobs").get(verifyToken, getAllJobs);
 
@@ -20,10 +21,10 @@ router.delete(
   removeJobApplication
 );
 
-router.get("/job-list", getJobList);
+router.get("/job-list",verifyToken, getJobList);
 
-router.post("/post-job", createJob);
+router.post("/post-job",verifyToken, createJob);
 
-router.get("/job-single/:jobId", getJobByJobId);
+router.get("/job-single/:jobId",verifyToken, getJobByJobId);
 
 module.exports = router;

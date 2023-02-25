@@ -121,15 +121,14 @@ const removeJobApplication = async (req, res) => {
 const getJobList = async (req, res) => {
   try {
     const jobs = await Job.find(
-      {},
+      { jobActive: true },
       {
-        logo: 1,
-        privacy: 1,
         title: 1,
         company: 1,
+        companyName: 1,
         location: 1,
-        salary: 1,
-        createdAt: 1,
+        logo: 1,
+        jobActive: 1,
       }
     ).populate({
       path: "company",
@@ -151,20 +150,13 @@ const createJob = async (req, res) => {
   try {
     // Verificar el token del usuario
     const authHeader = req.headers.authorization || req.headers.Authorization;
-    const token = authHeader.split(" ")[1];
+    const token = authHeader;
 
     const decodedToken = jwt_decode(token);
 
     // Obtener los datos del usuario
-    const {
-      title,
-      description,
-      location,
-      salary,
-      jobType,
-      privacy,
-      jobActive,
-    } = req.body;
+    const { title, description, location, salary, jobType, jobActive } =
+      req.body;
     const createdAt = new Date();
 
     // Buscar la información de la compañía
@@ -185,10 +177,10 @@ const createJob = async (req, res) => {
       location,
       salary,
       jobType,
-      privacy,
       jobActive,
       createdAt,
       company: company._id,
+      companyName: company.companyName,
       logo: company.logo,
     });
 
