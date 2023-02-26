@@ -3,14 +3,14 @@
   "info": {
     "version": "1.0.0",
     "title": "API Documentation CodeJobs",
-    "description": "Swagger CodeJobs"
+    "description": "Swagger CodeJobs by nel386"
   },
   "host": "localhost:8000",
   "basePath": "/",
   "schemes": ["http"],
   "securityDefinitions": {
     "bearerAuth": {
-      "type": "apiKey",
+      "type": "Token de acceso",
       "name": "Authorization",
       "in": "header"
     }
@@ -369,6 +369,7 @@
             "bearerAuth": []
           }
         ],
+        "summary": "Obtener la lista de todos los trabajo",
         "description": "Obtener la lista de ofertas de trabajo",
         "responses": {
           "200": {

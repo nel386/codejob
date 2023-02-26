@@ -212,24 +212,35 @@ const refresh = (req, res) => {
   );
 };
 
-// @desc changePassword
-// @route PATCH /auth/changePassword/:id
-// @access Private
+// @Desc Cambiar la contraseña
+// @Route PATCH /auth/changePassword/:id
+// @Acceso Privado
 const changePassword = asyncHandler(async (req, res) => {
+  // Recuperar la antigua contraseña y la nueva contraseña del cuerpo de la solicitud
   const { oldPassword, newPassword } = req.body;
+
+  // Buscar al usuario en la base de datos utilizando el id proporcionado en la URL
   const foundUser = await Login.findById(req.params.id).exec();
 
-  if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
+  // Si no se encuentra al usuario, retornar un estatus 401 y un mensaje "No autorizado"
+  if (!foundUser) return res.status(401).json({ message: "No autorizado" });
 
+  // Comparar la antigua contraseña proporcionada con la contraseña almacenada en la base de datos
   const match = await bcrypt.compare(oldPassword, foundUser.password);
+
+  // Si las contraseñas no coinciden, retornar un estatus 401 y un mensaje de error
   if (!match)
     return res.status(401).json({
-      message: "Unauthorized",
+      message: "No autorizado",
       data: null,
-      error: "Wrong old password",
+      error: "Contraseña antigua incorrecta",
     });
+
+  // Si las contraseñas coinciden, proceder a actualizar la contraseña
   if (match) {
+    // Hashear la nueva contraseña
     const newPasswordHash = await bcrypt.hash(newPassword, 10);
+    // Actualizar el usuario en la base de datos con la nueva contraseña
     const updatedUser = await Login.findByIdAndUpdate(
       req.params.id,
       {
@@ -239,7 +250,9 @@ const changePassword = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    res.status(200).json({ status: "succeeded", updatedUser, error: null });
+
+    // Retornar un estatus 200 y el usuario actualizado
+    res.status(200).json({ status: "Exitoso", updatedUser, error: null });
   }
 });
 

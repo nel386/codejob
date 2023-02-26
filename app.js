@@ -8,15 +8,9 @@ mongoose.set("strictQuery", true);
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
-
-
-// Importar controladores
+// Importar middlewares de log y manejo de errores
 const { logger, logEvents } = require("./middlewares/logger");
 const errorHandler = require("./middlewares/errorHandler");
-
-const jobs = require("./controllers/job.controller");
-const candidates = require("./controllers/candidate.controller");
-// const employers = require("./controllers/employer.controller");
 
 // Configurar variables de entorno
 require("dotenv").config();

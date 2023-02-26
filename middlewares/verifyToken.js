@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
 
+
+//Funcion de Alina que terminó dándome problemas.
+
 // const verifyToken = (req, res, next) => {
 //   const authHeader = req.headers.authorization || req.headers.Authorization;
 
