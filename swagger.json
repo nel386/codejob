@@ -110,8 +110,8 @@
       "get": {
         "tags": ["Job"],
 
-        "summary": "Obtener todas las ofertas de trabajo",
-        "description": "Endpoint para obtener todas las ofertas de trabajo existentes",
+        "summary": "Obtener todas las ofertas de trabajo activas",
+        "description": "Endpoint para obtener todas las ofertas de trabajo activas existentes",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "security": [
@@ -186,7 +186,7 @@
       "get": {
         "tags": ["Job"],
 
-        "summary": "Get Jobs Applied By Id",
+        "summary": "Obtener las ofertas de trabajo a las que se ha aplicado un usuario específico",
         "description": "Endpoint para obtener las ofertas de trabajo a las que se ha aplicado un usuario específico",
         "consumes": ["application/json"],
         "produces": ["application/json"],
@@ -266,8 +266,8 @@
     "/job/jobs-applied/{loginId}/{jobId}": {
       "delete": {
         "tags": ["Job"],
-        "summary": "Delete job by jobId",
-        "description": "This endpoint allows to delete a job by jobId",
+        "summary": "Borrar una oferta de trabajo a la que se ha aplicado un usuario específico",
+        "description": "Endpoint para borrar una oferta de trabajo a la que se ha aplicado un usuario específico",
         "operationId": "removeJobApplication",
         "produces": ["application/json"],
         "security": [
@@ -291,16 +291,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful operation"
+            "description": "Oferta de trabajo borrada exitosamente"
           },
           "400": {
-            "description": "Bad request"
+            "description": "Solicitud inválida"
           },
           "404": {
-            "description": "Job not found"
+            "description": "Oferta de trabajo no encontrada"
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Error interno del servidor"
           }
         }
       }
@@ -369,10 +369,10 @@
             "bearerAuth": []
           }
         ],
-        "description": "Get list jobs",
+        "description": "Obtener la lista de ofertas de trabajo",
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "Operacion exitosa",
             "content": {
               "application/json": {
                 "schema": {
@@ -424,7 +424,7 @@
             }
           },
           "404": {
-            "description": "Error, jobs not found",
+            "description": "Error, trabajos no encontrados",
             "content": {
               "application/json": {
                 "schema": {
@@ -526,7 +526,7 @@
             }
           },
           "400": {
-            "description": "Bad request",
+            "description": "Solicitud inválida",
             "content": {
               "application/json": {
                 "schema": {
@@ -544,7 +544,7 @@
             }
           },
           "500": {
-            "description": "Server error",
+            "description": "Error interno del servidor",
             "content": {
               "application/json": {
                 "schema": {
@@ -762,7 +762,7 @@
             }
           },
           "400": {
-            "description": "Bad request",
+            "description": "Solicitud inválida",
             "content": {
               "application/json": {
                 "schema": {
@@ -780,7 +780,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "No autorizado",
             "content": {
               "application/json": {
                 "schema": {
@@ -816,7 +816,7 @@
             }
           },
           "500": {
-            "description": "Server error",
+            "description": "Error interno del servidor",
             "content": {
               "application/json": {
                 "schema": {
