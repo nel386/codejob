@@ -10,7 +10,7 @@
   "schemes": ["http"],
   "securityDefinitions": {
     "bearerAuth": {
-      "type": "Token de acceso",
+      "type": "apiKey",
       "name": "Authorization",
       "in": "header"
     }
@@ -348,6 +348,10 @@
                       "bootcamp": {
                         "type": "string",
                         "example": "Web Development"
+                      },
+                      "registerAt": {
+                        "type": "date",
+                        "example": "2021-01-01T00:00:00.000+00:00"
                       }
                     }
                   }
