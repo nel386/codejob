@@ -840,6 +840,80 @@
           }
         }
       }
+    },
+    "/job/employer-jobs/{loginId}": {
+      "get": {
+        "tags": ["Job"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener todos los trabajos de un empleador por su loginId",
+        "description": "Endpoint para obtener todos los trabajos de un empleador por su loginId",
+        "operationId": "getEmployerJobsByLoginId",
+        "produces": ["application/json"],
+
+        "parameters": [
+          {
+            "name": "loginId",
+            "in": "path",
+            "required": true,
+            "description": "Id de inicio de sesión del empleador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de trabajos del empleador"
+          },
+          "401": {
+            "description": "Token no proporcionado o inválido"
+          }
+        }
+      }
+    },
+    "/job/delete-job/{loginId}/{jobId}": {
+      "delete": {
+        "tags": ["Job"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Eliminar un trabajo de un determinado empleador por su loginId y jobId",
+        "description": "Eliminar un trabajo de un determinado empleador por su loginId y jobId",
+        "operationId": "deleteJob",
+        "parameters": [
+          {
+            "name": "loginId",
+            "in": "path",
+            "description": "El loginId del empleador dueño del trabajo",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "description": "El id del trabajo a ser eliminado",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa"
+          },
+          "400": {
+            "description": "Error en la solicitud"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      }
     }
   }
 }

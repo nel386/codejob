@@ -8,6 +8,8 @@ const {
   getJobList,
   createJob,
   getJobByJobId,
+  getEmployerJobsByLoginId,
+  removeJobByLoginIdAndJobId,
 } = require("../controllers/job.controller");
 const { verify } = require("jsonwebtoken");
 
@@ -21,10 +23,18 @@ router.delete(
   removeJobApplication
 );
 
-router.get("/job-list",verifyToken, getJobList);
+router.get("/job-list", verifyToken, getJobList);
 
-router.post("/post-job",verifyToken, createJob);
+router.post("/post-job", verifyToken, createJob);
 
-router.get("/job-single/:jobId",verifyToken, getJobByJobId);
+router.get("/job-single/:jobId", verifyToken, getJobByJobId);
+
+router.get("/employer-jobs/:loginId", verifyToken, getEmployerJobsByLoginId);
+
+router.delete(
+  "/delete-job/:loginId/:jobId",
+  verifyToken,
+  removeJobByLoginIdAndJobId
+);
 
 module.exports = router;
