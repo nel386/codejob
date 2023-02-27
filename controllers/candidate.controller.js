@@ -15,6 +15,7 @@ const getAllCandidates = async (req, res) => {
       firstName: 1,
       lastName: 1,
       bootcamp: 1,
+      registerAt: 1,
     }
   );
 
