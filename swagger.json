@@ -914,6 +914,141 @@
           }
         }
       }
+    },
+    "/job/edit-job/{loginId}/{jobId}": {
+      "patch": {
+        "tags": ["Job"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Editar una oferta de trabajo existente",
+        "description": "Endpoint para editar una oferta de trabajo existente",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "loginId",
+            "in": "path",
+            "required": true,
+            "description": "El loginId del empleador que creó la oferta de trabajo",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "description": "El id del trabajo a editar",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Datos para editar la oferta de trabajo",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Desarrollador Full Stack"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Buscamos un desarrollador full stack con experiencia en Node.js y React"
+                },
+                "location": {
+                  "type": "object",
+                  "properties": {
+                    "country": {
+                      "type": "string",
+                      "example": "España"
+                    },
+                    "city": {
+                      "type": "string",
+                      "example": "Madrid"
+                    }
+                  }
+                },
+                "salary": {
+                  "type": "integer",
+                  "example": 18000
+                },
+                "jobType": {
+                  "type": "string",
+                  "example": "Presencial"
+                },
+                "jobActive": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Oferta de trabajo editada exitosamente",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

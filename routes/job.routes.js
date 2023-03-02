@@ -5,6 +5,7 @@ const {
   getAllJobs,
   getJobsAppliedByLoginId,
   removeJobApplication,
+  updateJobByLoginIdAndJobId,
   getJobList,
   createJob,
   getJobByJobId,
@@ -21,6 +22,12 @@ router.delete(
   "/jobs-applied/:loginId/:jobId",
   verifyToken,
   removeJobApplication
+);
+
+router.patch(
+  "/edit-job/:loginId/:jobId",
+  verifyToken,
+  updateJobByLoginIdAndJobId
 );
 
 router.get("/job-list", verifyToken, getJobList);

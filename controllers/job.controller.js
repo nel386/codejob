@@ -14,7 +14,7 @@ const asyncHandler = require("express-async-handler");
 const getAllJobs = async (req, res) => {
   try {
     // Buscar todas las ofertas de trabajo activas y populadas por la empresa
-    const jobs = await Job.find({ jobActive: true }).populate("company");
+    const jobs = await Job.find({ jobActive: true });
     // Enviar una respuesta exitosa con los datos de las ofertas de trabajo
     res.status(200).json({ status: "Succeeded", data: jobs, error: null });
   } catch (error) {
@@ -35,14 +35,15 @@ const getEmployerJobsByLoginId = async (req, res) => {
     const token = authHeader;
 
     const decodedToken = jwt_decode(token);
+    const loginId = req.params.loginId;
 
     // Buscar la información de la compañía
     const company = await Employer.findOne({
-      loginId: decodedToken.UserInfo.id,
+      loginId,
     });
 
     // Buscar todas las ofertas de trabajo de la compañía
-    const jobs = await Job.find({ company: company._id });
+    const jobs = await Job.find({ company: company.loginId });
 
     // Retornar un estatus 200 y los datos de las ofertas de trabajo
     res.status(200).json({ status: "Succeeded", data: jobs, error: null });
@@ -67,6 +68,61 @@ const removeJobByLoginIdAndJobId = async (req, res) => {
     });
     res.status(200).json({ status: "Succeeded", data: job, error: null });
   } catch (error) {
+    res
+      .status(404)
+      .json({ status: "Failed", data: null, error: error.message });
+  }
+};
+
+// @Desc Editar un trabajo de un determinado empleador por su loginId y jobId
+// @Route PUT /job/edit-job/:loginId/:jobId
+// @Access Privado
+const updateJobByLoginIdAndJobId = async (req, res) => {
+  try {
+    // Verificar el token del usuario
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+    const token = authHeader;
+    const decodedToken = jwt_decode(token);
+
+    // Obtener el loginId y el jobId de los parámetros de la ruta
+    const loginId = req.params.loginId;
+    const jobId = req.params.jobId;
+
+    // Comprobar que el loginId del token coincide con el loginId de la ruta
+    if (decodedToken.UserInfo.id !== loginId) {
+      return res.status(401).json({
+        message: "No tienes permiso para editar este trabajo",
+        data: null,
+      });
+    }
+
+    // Buscar la información del trabajo a editar
+    const job = await Job.findOne({
+      loginId: loginId,
+      _id: jobId,
+    });
+
+    // Comprobar que el trabajo existe
+    if (!job) {
+      return res.status(400).json({
+        message: "No se encontró la información del trabajo",
+        data: null,
+      });
+    }
+
+    // Actualizar la información del trabajo
+    const updatedJob = await Job.findOneAndUpdate(
+      { loginId: loginId, _id: jobId },
+      { $set: req.body },
+      { new: true }
+    );
+
+    // Enviar una respuesta exitosa con los datos actualizados del trabajo
+    res
+      .status(200)
+      .json({ status: "Succeeded", data: updatedJob, error: null });
+  } catch (error) {
+    // Enviar una respuesta con error en caso de que ocurra algún problema
     res
       .status(404)
       .json({ status: "Failed", data: null, error: error.message });
@@ -140,7 +196,7 @@ const createJob = async (req, res) => {
       jobType,
       jobActive,
       createdAt,
-      company: company._id,
+      company: company.loginId,
       companyName: company.companyName,
       logo: company.logo,
     });
@@ -299,6 +355,7 @@ module.exports = {
   getAllJobs,
   getEmployerJobsByLoginId,
   removeJobByLoginIdAndJobId,
+  updateJobByLoginIdAndJobId,
   getJobsAppliedByLoginId,
   removeJobApplication,
   getJobList,
