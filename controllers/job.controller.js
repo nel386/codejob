@@ -31,7 +31,7 @@ const getAllJobs = async (req, res) => {
 const getEmployerJobsByLoginId = async (req, res) => {
   try {
     //Obtener el id del token
-    const authHeader = req.headers.authorization || req.headers.Authorization;
+    const authHeader = req.headers("auth-token") || req.headers("Auth-token");
     const token = authHeader;
 
     const decodedToken = jwt_decode(token);
@@ -80,7 +80,7 @@ const removeJobByLoginIdAndJobId = async (req, res) => {
 const updateJobByLoginIdAndJobId = async (req, res) => {
   try {
     // Verificar el token del usuario
-    const authHeader = req.headers.authorization || req.headers.Authorization;
+    const authHeader = req.headers("auth-token") || req.headers("Auth-token");
     const token = authHeader;
     const decodedToken = jwt_decode(token);
 
@@ -166,7 +166,7 @@ const getJobList = async (req, res) => {
 const createJob = async (req, res) => {
   try {
     // Verificar el token del usuario
-    const authHeader = req.headers.authorization || req.headers.Authorization;
+    const authHeader = req.headers("auth-token") || req.headers("Auth-token");
     const token = authHeader;
 
     const decodedToken = jwt_decode(token);
