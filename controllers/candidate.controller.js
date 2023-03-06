@@ -1,5 +1,6 @@
 const Candidate = require("../models/candidate.model");
-const verifyToken = require("../middlewares/verifyToken");
+const jwt_decode = require("jwt-decode");
+const mongoose = require("mongoose");
 
 // @Desc Obtener todos los candidatos
 // @Route GET /candidate/all-candidates
@@ -46,7 +47,63 @@ const getCandidateByLoginId = async (req, res) => {
   res.status(200).json({ status: "Succeeded", data: candidate, error: null });
 };
 
+// @Desc Agregar un candidato a la lista de seguimiento del empleador
+// @Route POST /candidate/:loginId/watchlist
+// @Acceso Privado
+const addToWatchlist = async (req, res) => {
+  try {
+    // Verificar el token del usuario
+    const authHeader = req.header("auth.token") || req.header("Auth-token");
+    const token = authHeader;
+
+    const decodedToken = jwt_decode(token);
+
+    // Verificar si el usuario loggeado es un empleador
+    if (decodedToken.UserInfo.role !== "employer") {
+      return res.status(401).json({
+        message: "No tienes permiso para realizar esta acción",
+        data: null,
+      });
+    }
+
+    // Obtener el loginId del candidato a partir de la URL
+    const candidateId = req.params.loginId;
+    console.log(candidateId);
+
+    // Convertir el loginId a ObjectId
+    const objectId = mongoose.Types.ObjectId(candidateId);
+
+    // Buscar la información del candidato
+    const candidate = await Candidate.findOne({ loginId: candidateId });
+    if (!candidate) {
+      return res.status(400).json({
+        message: "No se encontró la información del candidato",
+        data: null,
+      });
+    }
+
+    // Agregar el loginId del empleador a la lista de seguimiento del candidato
+    await Candidate.findOneAndUpdate(
+      { loginId: candidateId },
+      {
+        $push: { watchlist: decodedToken.UserInfo.id },
+      }
+    );
+
+    return res.status(200).json({
+      message: "Candidato agregado a la lista de seguimiento",
+      data: null,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error al agregar el candidato a la lista de seguimiento",
+      error,
+    });
+  }
+};
+
 module.exports = {
   getAllCandidates,
   getCandidateByLoginId,
+  addToWatchlist,
 };

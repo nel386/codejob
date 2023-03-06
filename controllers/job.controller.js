@@ -60,17 +60,60 @@ const getEmployerJobsByLoginId = async (req, res) => {
 // @Access Privado
 const removeJobByLoginIdAndJobId = async (req, res) => {
   try {
+    // Verificar el token del usuario
+    const authHeader = req.header("auth-token") || req.header("Auth-token");
+    const token = authHeader;
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    // Verificar si el usuario loggeado es un empleador
+    if (decodedToken.UserInfo.role !== "employer") {
+      return res.status(401).json({
+        status: "Failed",
+        error: "No tienes permiso para realizar esta acción",
+        data: null,
+      });
+    }
+
+    // Obtener el loginId y jobId del empleador a partir de la URL
     const loginId = req.params.loginId;
     const jobId = req.params.jobId;
-    const job = await Job.findOneAndDelete({
+
+    // Verificar que el empleador loggeado es el dueño del trabajo
+    const job = await Job.findOne({ loginId, _id: jobId });
+    if (!job) {
+      return res.status(400).json({
+        status: "Failed",
+        error: "No se encontró el trabajo especificado",
+        data: null,
+      });
+    }
+    if (decodedToken.UserInfo.id !== job.company.toString()) {
+      console.log(decodedToken.UserInfo.id);
+      console.log(job.company);
+      return res.status(403).json({
+        status: "Failed",
+        error: "No tienes permiso para eliminar este trabajo",
+        data: null,
+      });
+    }
+
+    // Eliminar el trabajo
+    const deletedJob = await Job.findOneAndDelete({
       loginId: loginId,
       _id: jobId,
     });
-    res.status(200).json({ status: "Succeeded", data: job, error: null });
+
+    return res.status(200).json({
+      status: "Succeeded",
+      error: null,
+      data: deletedJob,
+    });
   } catch (error) {
-    res
-      .status(404)
-      .json({ status: "Failed", data: null, error: error.message });
+    return res.status(500).json({
+      status: "Failed",
+      error: "Error al eliminar el trabajo",
+      data: null,
+    });
   }
 };
 
