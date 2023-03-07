@@ -18,18 +18,10 @@ const candidateSchema = new Schema({
     type: Schema.Types.String,
     ref: "Login",
   },
-  firstName: {
+  fullName: {
     type: String,
     required: true,
   },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  secondLastName: {
-    type: String,
-  },
-
   bootcamp: {
     type: String,
     required: true,

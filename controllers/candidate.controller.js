@@ -13,8 +13,7 @@ const getAllCandidates = async (req, res) => {
       // Seleccionar solo los campos específicos
       loginId: 1,
       photo: 1,
-      firstName: 1,
-      lastName: 1,
+      fullName: 1,
       bootcamp: 1,
       registerAt: 1,
     }
