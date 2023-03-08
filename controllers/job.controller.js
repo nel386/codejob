@@ -31,7 +31,7 @@ const getAllJobs = async (req, res) => {
 const getEmployerJobsByLoginId = async (req, res) => {
   try {
     //Obtener el id del token
-    const authHeader = req.headers("auth-token") || req.headers("Auth-token");
+    const authHeader = req.header("auth-token") || req.header("Auth-token");
     const token = authHeader;
 
     const decodedToken = jwt_decode(token);
@@ -43,7 +43,21 @@ const getEmployerJobsByLoginId = async (req, res) => {
     });
 
     // Buscar todas las ofertas de trabajo de la compañía
-    const jobs = await Job.find({ company: company.loginId });
+    const jobs = await Job.find(
+      {},
+      {
+        company: 1,
+        companyName: 1,
+        title: 1,
+        jobType: 1,
+        logo: 1,
+        _id: 1,
+        location: 1,
+        applicants: 1,
+        createdAt: 1,
+      }
+    );
+    console.log(jobs);
 
     // Retornar un estatus 200 y los datos de las ofertas de trabajo
     res.status(200).json({ status: "Succeeded", data: jobs, error: null });
@@ -123,7 +137,7 @@ const removeJobByLoginIdAndJobId = async (req, res) => {
 const updateJobByLoginIdAndJobId = async (req, res) => {
   try {
     // Verificar el token del usuario
-    const authHeader = req.headers("auth-token") || req.headers("Auth-token");
+    const authHeader = req.header("auth-token") || req.header("Auth-token");
     const token = authHeader;
     const decodedToken = jwt_decode(token);
 
@@ -209,7 +223,7 @@ const getJobList = async (req, res) => {
 const createJob = async (req, res) => {
   try {
     // Verificar el token del usuario
-    const authHeader = req.headers("auth-token") || req.headers("Auth-token");
+    const authHeader = req.header("auth-token") || req.header("Auth-token");
     const token = authHeader;
 
     const decodedToken = jwt_decode(token);
@@ -287,32 +301,30 @@ const getJobByJobId = async (req, res) => {
 };
 
 // @Desc Obtiene ofertas de trabajo aplicadas por el loginId
-// @Route GET /job/jobs-applied/:jobId
+// @Route GET /job/jobs-applied/:loginId
 // @Access Privado
 const getJobsAppliedByLoginId = async (req, res) => {
   try {
     const loginId = req.params.loginId;
-    const jobs = await Job.find({
-      applicants: { $elemMatch: { applicantId: loginId } },
+    const user = await Candidate.findOne({ loginId }).populate("appliedJobs");
+    const jobs = user.appliedJobs;
+
+    // Crear un arreglo de promesas para obtener el nombre de la empresa de cada trabajo
+    const promises = jobs.map(async (job) => {
+      const companyName = await Employer.findOne(
+        { loginId: job.company },
+        { companyName: 1, _id: 1 }
+      );
+      job.company = companyName.companyName;
+      return job;
     });
-    const jobsWithApplicantsCount = await Promise.all(
-      jobs.map(async (job) => {
-        const count = job.applicants.length;
-        return {
-          _id: job._id,
-          title: job.title,
-          createdAt: job.createdAt,
-          jobActive: job.jobActive,
-          location: job.location,
-          logo: job.logo,
-          applicantsCount: count,
-        };
-      })
-    );
+
+    // Esperar a que se resuelvan todas las promesas antes de retornar los resultados
+    const results = await Promise.all(promises);
 
     res.status(200).json({
       status: "Succeeded",
-      data: jobsWithApplicantsCount,
+      data: results,
       error: null,
     });
   } catch (error) {
@@ -321,6 +333,7 @@ const getJobsAppliedByLoginId = async (req, res) => {
       .json({ status: "Failed", data: null, error: error.message });
   }
 };
+
 // @Desc Eliminar una inscripción a una oferta de trabajo por jobId y loginId
 // @Route DELETE /job/jobs-applied/:loginId/:jobId
 // @Acceso Privado
@@ -329,7 +342,9 @@ const removeJobApplication = async (req, res) => {
     // Obtener el jobId y el loginId de los parámetros de la URL
     const jobId = req.params.jobId;
     const loginId = req.params.loginId;
-    const job = await Job.findOne({ _id: jobId });
+
+    // Buscar el trabajo por su ID
+    const job = await Job.findById(jobId);
 
     // Si el trabajo no se encuentra, se retorna un estatus 404 y un mensaje de error
     if (!job) {
@@ -355,9 +370,6 @@ const removeJobApplication = async (req, res) => {
       });
     }
 
-    // Eliminar el objeto del candidato de la lista de applicants
-    job.applicants.splice(applicantIndex, 1);
-
     // Buscar el candidato en la base de datos usando el loginId
     const candidate = await Candidate.findOne({ loginId: loginId });
 
@@ -374,9 +386,14 @@ const removeJobApplication = async (req, res) => {
     const jobAppliedIndex = candidate.appliedJobs.indexOf(jobId);
     candidate.appliedJobs.splice(jobAppliedIndex, 1);
 
+    // Eliminar el objeto del candidato de la lista de applicants
+    job.applicants.splice(applicantIndex, 1);
+
+    //Eliminar el jobId de la lista de appliedJobs del candidato
+
     // Guardar los cambios en la base de datos
-    await candidate.save();
     await job.save();
+    await candidate.save();
 
     // Retornar un estatus 200 y un mensaje de éxito
     res.status(200).json({
