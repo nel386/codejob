@@ -65,7 +65,18 @@ const candidateSchema = new Schema({
   photo: {
     type: String,
   },
-  watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employer" }],
+  watchlist: [
+    {
+      employerId: {
+        type: Schema.Types.ObjectId,
+        ref: "Employer",
+      },
+      lastUpdate: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 const Candidate = mongoose.model("Candidate", candidateSchema);

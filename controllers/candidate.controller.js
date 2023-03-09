@@ -81,13 +81,35 @@ const addToWatchlist = async (req, res) => {
       });
     }
 
-    // Agregar el loginId del empleador a la lista de seguimiento del candidato
-    await Candidate.findOneAndUpdate(
-      { loginId: candidateId },
-      {
-        $push: { watchlist: decodedToken.UserInfo.id },
-      }
-    );
+    // Verificar si el employerId ya existe en la lista de seguimiento del candidato
+    const employerExists = await Candidate.findOne({
+      loginId: candidateId,
+      "watchlist.employerId": decodedToken.UserInfo.id,
+    });
+
+    if (employerExists) {
+      // Actualizar la fecha de lastUpdate
+      await Candidate.updateOne(
+        {
+          loginId: candidateId,
+          "watchlist.employerId": decodedToken.UserInfo.id,
+        },
+        { $set: { "watchlist.$.lastUpdate": Date.now() } }
+      );
+    } else {
+      // Agregar el employerId a la lista de seguimiento del candidato
+      await Candidate.findOneAndUpdate(
+        { loginId: candidateId },
+        {
+          $push: {
+            watchlist: {
+              employerId: decodedToken.UserInfo.id,
+              lastUpdate: Date.now(),
+            },
+          },
+        }
+      );
+    }
 
     return res.status(200).json({
       message: "Candidato agregado a la lista de seguimiento",
