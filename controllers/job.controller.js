@@ -92,6 +92,7 @@ const removeJobByLoginIdAndJobId = async (req, res) => {
     const loginId = req.params.loginId;
     const jobId = req.params.jobId;
 
+    console.log(jobId)
     // Verificar que el empleador loggeado es el dueño del trabajo
     const job = await Job.findOne({ loginId, _id: jobId });
     if (!job) {
@@ -111,11 +112,18 @@ const removeJobByLoginIdAndJobId = async (req, res) => {
       });
     }
 
+
     // Eliminar el trabajo
     const deletedJob = await Job.findOneAndDelete({
       loginId: loginId,
       _id: jobId,
     });
+
+    // Eliminar el jobId del array jobs del employer
+    await Employer.updateOne(
+      { _id: decodedToken.UserInfo.id },
+      { $pull: { jobs: jobId } }
+    );
 
     return res.status(200).json({
       status: "Succeeded",
@@ -130,6 +138,7 @@ const removeJobByLoginIdAndJobId = async (req, res) => {
     });
   }
 };
+
 
 // @Desc Editar un trabajo de un determinado empleador por su loginId y jobId
 // @Route PUT /job/edit-job/:loginId/:jobId
@@ -262,7 +271,7 @@ const createJob = async (req, res) => {
 
     // Actualizar la información del empleador
     await Employer.findByIdAndUpdate(company._id, {
-      $push: { jobs: newJob._id },
+      $push: { jobs: newJob._id.toString() },
     });
 
     return res.status(201).json({

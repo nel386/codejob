@@ -41,7 +41,7 @@ const employerSchema = new Schema({
   logo: {
     type: String,
   },
-  jobs: [{ type: Schema.Types.ObjectId, ref: "Job" }],
+  jobs: [{ type: Schema.Types.String, ref: "Job" }],
 });
 
 const Employer = mongoose.model("Employer", employerSchema);
