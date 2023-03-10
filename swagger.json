@@ -266,6 +266,7 @@
     "/job/jobs-applied/{loginId}/{jobId}": {
       "delete": {
         "tags": ["Job"],
+        "deprecated": true,
         "summary": "Borrar una oferta de trabajo a la que se ha aplicado un usuario específico",
         "description": "Endpoint para borrar una oferta de trabajo a la que se ha aplicado un usuario específico",
         "operationId": "removeJobApplication",

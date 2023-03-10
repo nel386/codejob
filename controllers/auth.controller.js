@@ -53,7 +53,7 @@ const createNewUser = asyncHandler(async (req, res) => {
                 },
               },
               process.env.ACCESS_TOKEN_SECRET,
-              { expiresIn: "1d" }
+              { expiresIn: "20m" }
             ),
             refreshToken: jwt.sign(
               { email: newUser.email },
@@ -224,7 +224,7 @@ const changePassword = asyncHandler(async (req, res) => {
   const foundUser = await Login.findById(req.params.id).exec();
 
   // Si no se encuentra al usuario, retornar un estatus 401 y un mensaje "No autorizado"
-  if (!foundUser) return res.status(401).json({ message: "No autorizado" });
+  if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
 
   // Comparar la antigua contraseña proporcionada con la contraseña almacenada en la base de datos
   const match = await bcrypt.compare(oldPassword, foundUser.password);
@@ -232,9 +232,9 @@ const changePassword = asyncHandler(async (req, res) => {
   // Si las contraseñas no coinciden, retornar un estatus 401 y un mensaje de error
   if (!match)
     return res.status(401).json({
-      message: "No autorizado",
+      message: "Unauthorized",
       data: null,
-      error: "Contraseña antigua incorrecta",
+      error: "Old Password is incorrect",
     });
 
   // Si las contraseñas coinciden, proceder a actualizar la contraseña
@@ -253,7 +253,7 @@ const changePassword = asyncHandler(async (req, res) => {
     );
 
     // Retornar un estatus 200 y el usuario actualizado
-    res.status(200).json({ status: "Exitoso", updatedUser, error: null });
+    res.status(200).json({ status: "Succedeed", updatedUser, error: null });
   }
 });
 

@@ -315,25 +315,15 @@ const getJobByJobId = async (req, res) => {
 const getJobsAppliedByLoginId = async (req, res) => {
   try {
     const loginId = req.params.loginId;
-    const user = await Candidate.findOne({ loginId }).populate("appliedJobs");
-    const jobs = user.appliedJobs;
+    const candidate = await Candidate.findOne({ loginId }).populate('appliedJobs');
+    const jobs = candidate.appliedJobs;
 
-    // Crear un arreglo de promesas para obtener el nombre de la empresa de cada trabajo
-    const promises = jobs.map(async (job) => {
-      const companyName = await Employer.findOne(
-        { loginId: job.company },
-        { companyName: 1, _id: 1 }
-      );
-      job.company = companyName.companyName;
-      return job;
-    });
-
-    // Esperar a que se resuelvan todas las promesas antes de retornar los resultados
-    const results = await Promise.all(promises);
+    console.log(candidate);
+    console.log(jobs);
 
     res.status(200).json({
       status: "Succeeded",
-      data: results,
+      data: jobs,
       error: null,
     });
   } catch (error) {
